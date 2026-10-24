@@ -1,0 +1,67 @@
+
+<main class="login-page">
+  <mat-card class="login-card">
+    <mat-card-header>
+      <mat-card-title>StockFlow</mat-card-title>
+      <mat-card-subtitle>
+        Sistema de gestión de inventario
+      </mat-card-subtitle>
+    </mat-card-header>
+
+    <mat-card-content>
+      <form [formGroup]="loginForm" (ngSubmit)="onSubmit()">
+        <mat-form-field appearance="outline">
+          <mat-label>Usuario</mat-label>
+          <input
+            matInput
+            formControlName="username"
+            autocomplete="username"
+          />
+          <mat-error *ngIf="loginForm.controls.username.hasError('required')">
+            Ingresa tu usuario.
+          </mat-error>
+        </mat-form-field>
+
+        <mat-form-field appearance="outline">
+          <mat-label>Contraseña</mat-label>
+          <input
+            matInput
+            [type]="hidePassword ? 'password' : 'text'"
+            formControlName="password"
+            autocomplete="current-password"
+          />
+
+          <button
+            mat-icon-button
+            matSuffix
+            type="button"
+            [attr.aria-label]="hidePassword ? 'Mostrar contraseña' : 'Ocultar contraseña'"
+            (click)="hidePassword = !hidePassword"
+          >
+            <mat-icon>
+              {{ hidePassword ? 'visibility' : 'visibility_off' }}
+            </mat-icon>
+          </button>
+
+          <mat-error *ngIf="loginForm.controls.password.hasError('required')">
+            Ingresa tu contraseña.
+          </mat-error>
+        </mat-form-field>
+
+        <p class="error-message" *ngIf="errorMessage" role="alert">
+          {{ errorMessage }}
+        </p>
+
+        <button
+          mat-flat-button
+          color="primary"
+          type="submit"
+          class="submit-button"
+          [disabled]="loading"
+        >
+          {{ loading ? 'Ingresando...' : 'Iniciar sesión' }}
+        </button>
+      </form>
+    </mat-card-content>
+  </mat-card>
+</main>

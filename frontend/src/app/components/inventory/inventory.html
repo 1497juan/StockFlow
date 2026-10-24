@@ -1,0 +1,170 @@
+
+<main class="inventory-page">
+<header class="page-header">
+  <div>
+    <h1>StockFlow</h1>
+    <p>Gestión de inventario</p>
+  </div>
+
+  <button
+    mat-stroked-button
+    color="primary"
+    type="button"
+    (click)="logout()"
+  >
+    Cerrar sesión
+  </button>
+</header>
+
+  <mat-card class="movement-card">
+    <mat-card-header>
+      <mat-card-title>Registrar movimiento</mat-card-title>
+      <mat-card-subtitle>
+        Registra entradas o salidas de productos.
+      </mat-card-subtitle>
+    </mat-card-header>
+
+    <mat-card-content>
+      <form [formGroup]="movementForm" (ngSubmit)="onSubmit()">
+        <label class="field-label">Tipo de operación</label>
+
+        <mat-radio-group
+          formControlName="type"
+          class="movement-options"
+        >
+          <mat-radio-button value="entry">
+            Entrada de stock
+          </mat-radio-button>
+
+          <mat-radio-button value="exit">
+            Salida de stock
+          </mat-radio-button>
+        </mat-radio-group>
+
+        <mat-form-field appearance="outline">
+          <mat-label>Producto</mat-label>
+
+          <mat-select formControlName="productId">
+            <mat-option
+              *ngFor="let product of products"
+              [value]="product.id"
+            >
+              {{ product.sku }} — {{ product.name }}
+              (Stock: {{ product.stock }})
+            </mat-option>
+          </mat-select>
+
+          <mat-error
+            *ngIf="movementForm.controls.productId.hasError('required')"
+          >
+            Selecciona un producto.
+          </mat-error>
+        </mat-form-field>
+
+        <mat-form-field appearance="outline">
+          <mat-label>Cantidad</mat-label>
+
+          <input
+            matInput
+            type="number"
+            min="1"
+            step="1"
+            formControlName="quantity"
+          />
+
+          <mat-error
+            *ngIf="movementForm.controls.quantity.hasError('required')"
+          >
+            Ingresa una cantidad.
+          </mat-error>
+
+          <mat-error
+            *ngIf="movementForm.controls.quantity.hasError('min') ||
+                   movementForm.controls.quantity.hasError('pattern')"
+          >
+            La cantidad debe ser un entero mayor que cero.
+          </mat-error>
+        </mat-form-field>
+
+        <p class="feedback success" *ngIf="successMessage" role="status">
+          {{ successMessage }}
+        </p>
+
+        <p class="feedback error" *ngIf="errorMessage" role="alert">
+          {{ errorMessage }}
+        </p>
+
+        <button
+          mat-flat-button
+          type="submit"
+          [disabled]="submitting || loadingProducts"
+        >
+          {{
+            submitting
+              ? 'Procesando...'
+              : movementForm.controls.type.value === 'entry'
+                ? 'Registrar entrada'
+                : 'Registrar salida'
+          }}
+        </button>
+      </form>
+    </mat-card-content>
+  </mat-card>
+
+  <mat-card class="inventory-card">
+    <mat-card-header>
+      <mat-card-title>Inventario actual</mat-card-title>
+      <mat-card-subtitle>
+        Existencias actualizadas desde el servidor.
+      </mat-card-subtitle>
+    </mat-card-header>
+
+    <mat-card-content>
+      <p *ngIf="loadingProducts">Cargando inventario...</p>
+
+      <div class="table-container" *ngIf="!loadingProducts">
+        <table>
+          <thead>
+            <tr>
+              <th>SKU</th>
+              <th>Producto</th>
+              <th>Precio unitario</th>
+              <th>Stock actual</th>
+            </tr>
+          </thead>
+
+          <tbody>
+            <tr *ngFor="let product of products">
+              <td>{{ product.sku }}</td>
+              <td>{{ product.name }}</td>
+              <td>
+                {{ product.unitPrice | currency:'COP':'symbol-narrow':'1.0-0' }}
+              </td>
+              <td>
+                <span
+                  class="stock-value"
+                  [class.low-stock]="product.stock === 0"
+                >
+                  {{ product.stock }}
+                </span>
+              </td>
+            </tr>
+
+            <tr *ngIf="products.length === 0">
+              <td colspan="4">No hay productos para mostrar.</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <button
+        mat-button
+        type="button"
+        (click)="loadInventory()"
+        [disabled]="loadingProducts"
+      >
+        Actualizar inventario
+      </button>
+    </mat-card-content>
+  </mat-card>
+</main>
