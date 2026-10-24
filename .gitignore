@@ -1,0 +1,32 @@
+
+# .NET: compilación y artefactos
+**/bin/
+**/obj/
+.vs/
+*.user
+*.suo
+
+# Configuración local y secretos
+**/appsettings.Development.json
+**/secrets.json
+
+# Angular y Node
+**/node_modules/
+**/dist/
+**/.angular/
+
+# Mac
+.DS_Store
+
+# Logs
+*.log
+
+# Rider / IntelliJ
+.idea/
+*.sln.iml
+
+# Visual Studio Code
+.vscode/
+
+# Visual Studio
+.vs/

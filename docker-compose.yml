@@ -1,0 +1,17 @@
+
+services:
+  postgres:
+    image: postgres:18
+    container_name: stockflow-postgres
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: stockflow_db
+      POSTGRES_USER: stockflow_user
+      POSTGRES_PASSWORD: StockFlow_Local_2026
+    ports:
+      - "5432:5432"
+    volumes:
+      - stockflow_data:/var/lib/postgresql
+
+volumes:
+  stockflow_data:
