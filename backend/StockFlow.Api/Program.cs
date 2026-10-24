@@ -14,6 +14,18 @@ using StockFlow.Infrastructure.Repositories;
 
 var builder = WebApplication.CreateBuilder(args);
 
+//CORS Policy
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("AngularFrontend", policy =>
+    {
+        policy
+            .WithOrigins("http://localhost:4200")
+            .AllowAnyHeader()
+            .AllowAnyMethod();
+    });
+});
+
 // Controllers and Swagger
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
@@ -108,6 +120,8 @@ if (app.Environment.IsDevelopment())
 app.UseMiddleware<ExceptionHandlingMiddleware>();
 
 app.UseHttpsRedirection();
+
+app.UseCors("AngularFrontend");
 
 app.UseAuthentication();
 app.UseAuthorization();
